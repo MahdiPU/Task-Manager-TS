@@ -1,12 +1,11 @@
 import { RequestHandler } from 'express'
-import {TaskSchema} from '../models/Task'
+import Model from '../models/Task'
 import {ITask} from '../models/Task'
-import {model, Schema} from 'mongoose'
+import { Schema} from 'mongoose'
 import {createCustomError} from '../errors/custom-error'
 
 export const getAllTasks: RequestHandler = async (req, res, next) => {
     try{
-    const Model = model('tasks', TaskSchema)
     const tasks = await Model.find({})
     res.status(200).json({ tasks })
     }catch(err: any){
@@ -17,7 +16,6 @@ export const getAllTasks: RequestHandler = async (req, res, next) => {
 }
 export const createTask: RequestHandler = async (req, res, next) => {
     try{
-    const Model = model('tasks', TaskSchema)
     const task = new Model<ITask>(req.body)
     await task.save()
     res.status(201).json({ task })
@@ -28,7 +26,6 @@ export const createTask: RequestHandler = async (req, res, next) => {
 export const getTask: RequestHandler = async (req, res, next) => {
     try{
     const { id: taskID } = req.params
-    const Model = model('tasks', TaskSchema)
     const task = await Model.findOne({ _id: taskID})
     if (!task) {
         return next(createCustomError(`No task with id : ${taskID}`, 404))
@@ -41,7 +38,6 @@ export const getTask: RequestHandler = async (req, res, next) => {
 export const deleteTask: RequestHandler = async (req, res, next) => {
     try{
     const { id: taskID } = req.params
-    const Model = model('tasks', TaskSchema)
     const task = await Model.findOneAndDelete({ _id: taskID})
     if (!task) {
         return next(createCustomError(`No task with id : ${taskID}`, 404))
@@ -54,7 +50,7 @@ export const deleteTask: RequestHandler = async (req, res, next) => {
 export const updateTask: RequestHandler = async (req, res, next) => {
     try{
     const { id: taskID } = req.params
-    const Model = model('tasks', TaskSchema)
+
     const task = await Model.findOneAndUpdate({ _id: taskID}, req.body, {
         new: true,
         runValidators: true
