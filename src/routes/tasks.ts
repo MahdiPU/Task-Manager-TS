@@ -1,7 +1,9 @@
-import { Router } from "express"
-import {} from '../controllers/tasks'
+import express, { Router } from "express"
+import {getAllTasks, createTask} from '../controllers/tasks'
 const router = Router();
 
+router.get('/', getAllTasks)
+router.post('/postman', createTask)
 
 
-module.exports = router
+export default router
