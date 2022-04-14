@@ -1,10 +1,11 @@
 import { Schema } from "mongoose";
 
-export class Task {
-  constructor(public name: string, public completed: Boolean){}
+export interface ITask{
+  name: string;
+  completed: boolean;
 }
 
-export const TaskSchema = new Schema<Task>({
+export const TaskSchema = new Schema<ITask>({
     name: {
       type: String,
       required: [true, 'must provide name'],

@@ -1,7 +1,8 @@
 import { RequestHandler } from 'express'
 import {TaskSchema} from '../models/Task'
-import {Task} from '../models/Task'
+import {ITask} from '../models/Task'
 import {model, Schema} from 'mongoose'
+import {createCustomError} from '../errors/custom-error'
 
 export const getAllTasks: RequestHandler = async (req, res, next) => {
     try{
@@ -17,8 +18,50 @@ export const getAllTasks: RequestHandler = async (req, res, next) => {
 export const createTask: RequestHandler = async (req, res, next) => {
     try{
     const Model = model('tasks', TaskSchema)
-    const task = await new Task((req.body as Task).name, (req.body as Task).completed)
-    Model.create(task)
+    const task = new Model<ITask>(req.body)
+    await task.save()
+    res.status(201).json({ task })
+    }catch(err: any){
+        res.status(500).send(err.message)
+    }
+}
+export const getTask: RequestHandler = async (req, res, next) => {
+    try{
+    const { id: taskID } = req.params
+    const Model = model('tasks', TaskSchema)
+    const task = await Model.findOne({ _id: taskID})
+    if (!task) {
+        return next(createCustomError(`No task with id : ${taskID}`, 404))
+      }
+    res.status(201).json({ task })
+    }catch(err: any){
+        res.status(500).send(err.message)
+    }
+}
+export const deleteTask: RequestHandler = async (req, res, next) => {
+    try{
+    const { id: taskID } = req.params
+    const Model = model('tasks', TaskSchema)
+    const task = await Model.findOneAndDelete({ _id: taskID})
+    if (!task) {
+        return next(createCustomError(`No task with id : ${taskID}`, 404))
+    }
+    res.status(201).json({ task })
+    }catch(err: any){
+        res.status(500).send(err.message)
+    }
+}
+export const updateTask: RequestHandler = async (req, res, next) => {
+    try{
+    const { id: taskID } = req.params
+    const Model = model('tasks', TaskSchema)
+    const task = await Model.findOneAndUpdate({ _id: taskID}, req.body, {
+        new: true,
+        runValidators: true
+    })
+    if (!task) {
+        return next(createCustomError(`No task with id : ${taskID}`, 404))
+      }
     res.status(201).json({ task })
     }catch(err: any){
         res.status(500).send(err.message)
