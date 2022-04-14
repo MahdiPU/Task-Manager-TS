@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express'
 import {TaskSchema} from '../models/Task'
-import {Task} from '../models/Task'
+import {ITask} from '../models/Task'
 import {model, Schema} from 'mongoose'
 
 export const getAllTasks: RequestHandler = async (req, res, next) => {
@@ -17,8 +17,8 @@ export const getAllTasks: RequestHandler = async (req, res, next) => {
 export const createTask: RequestHandler = async (req, res, next) => {
     try{
     const Model = model('tasks', TaskSchema)
-    const task = await new Task((req.body as Task).name, (req.body as Task).completed)
-    Model.create(task)
+    const task = new Model<ITask>(req.body)
+    await task.save()
     res.status(201).json({ task })
     }catch(err: any){
         res.status(500).send(err.message)
