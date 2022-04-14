@@ -1,11 +1,10 @@
 import { Schema } from "mongoose";
 
-interface Task {
-  name: string;
-  completed: boolean;
+export class Task {
+  constructor(public name: string, public completed: Boolean){}
 }
 
-const TaskSchema = new Schema<Task>({
+export const TaskSchema = new Schema<Task>({
     name: {
       type: String,
       required: [true, 'must provide name'],
@@ -15,4 +14,3 @@ const TaskSchema = new Schema<Task>({
     completed: { type: Boolean, default: false },
   });
 
-export default TaskSchema

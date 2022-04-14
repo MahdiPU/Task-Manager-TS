@@ -1,7 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.TaskSchema = exports.Task = void 0;
 const mongoose_1 = require("mongoose");
-const TaskSchema = new mongoose_1.Schema({
+class Task {
+    constructor(name, completed) {
+        this.name = name;
+        this.completed = completed;
+    }
+}
+exports.Task = Task;
+exports.TaskSchema = new mongoose_1.Schema({
     name: {
         type: String,
         required: [true, 'must provide name'],
@@ -10,4 +18,3 @@ const TaskSchema = new mongoose_1.Schema({
     },
     completed: { type: Boolean, default: false },
 });
-exports.default = TaskSchema;
