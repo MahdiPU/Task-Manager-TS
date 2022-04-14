@@ -11,7 +11,8 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 app.use((0, body_parser_1.json)());
-app.use('/', tasks_1.default);
+app.use(express_1.default.static('./dist/public'));
+app.use('/api/v1/tasks', tasks_1.default);
 const start = async () => {
     try {
         await (0, connect_1.connectDB)(process.env.MONGO_URI);

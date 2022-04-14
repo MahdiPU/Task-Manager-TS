@@ -6,7 +6,8 @@ import dotenv from 'dotenv'
 dotenv.config();
 const app = express()
 app.use(json())
-app.use('/',tasks)
+app.use(express.static('./dist/public'));
+app.use('/api/v1/tasks', tasks);
 const start = async () => {
     try {
       await connectDB(process.env.MONGO_URI as string);
